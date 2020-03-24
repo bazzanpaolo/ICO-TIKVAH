@@ -1,3 +1,7 @@
+ICO-TIKVAH
+
+ICO TIKVAH Ethereum Smart Contracts by Dapp University Progetto per la ralizzazione di una fattoria autosufficente energeticamente che produce beni e servizi per la popolazione locale e turisti.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
