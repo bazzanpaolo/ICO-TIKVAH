@@ -35,7 +35,7 @@ let token
     )
     // Transfer token ownership to crowdsale
      await token.transferOwnership(crowdsale.address);
-  })
+  });
 
   describe('crowdsale', () => {
     it('tracks the token', async () => {
