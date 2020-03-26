@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "@openzeppelin/contracts/crowdsale/Crowdsale.sol";
-import "@openzeppelin/contracts/crowdsale/emission/MintedCrowdsale.sol";
+import "openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
+import "openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 
 
 contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale {

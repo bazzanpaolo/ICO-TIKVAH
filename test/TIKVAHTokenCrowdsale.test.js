@@ -34,7 +34,7 @@ let token
       token.address
     )
     // Transfer token ownership to crowdsale
-     await token.transferOwnership(crowdsale.address);
+     await token.OwnershipTransferred(crowdsale.address);
   });
 
   describe('crowdsale', () => {
@@ -58,6 +58,6 @@ let token
        const value = ether(1)
        await crowdsale.sendTransactio({value: value, from: investor1})
      })
-  })
+    })
   })
 })
