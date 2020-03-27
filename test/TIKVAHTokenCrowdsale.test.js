@@ -34,7 +34,7 @@ let token
       token.address
     )
     // Transfer token ownership to crowdsale
-     await token.OwnershipTransferred(crowdsale.address);
+     await token.transferOwnership(crowdsale.address);
   });
 
   describe('crowdsale', () => {
