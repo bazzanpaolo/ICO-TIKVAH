@@ -24,7 +24,7 @@ contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
 
     }
 
-    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal {
+    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
         super._preValidatePurchase(beneficiary, weiAmount);
         uint256 _existingContribution = contributions[beneficiary];
         uint256 _newContribution = _existingContribution.add(weiAmount);
