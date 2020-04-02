@@ -24,11 +24,29 @@ contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
 
     }
 
-    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
+    /**
+     * @dev Returns the amount contributed so far by a specific user
+     * @dev Restituisce l'importo contribuito finora da un utente specifico
+     * @param beneficiary Address of contributor
+     * @param beneficiario Indirizzo del collaboratore
+     * @return User contribution so far
+     * @return Contributo dell'utente finora
+     */
+    function getUserContribution(address beneficiary) public view returns (uint256)
+    {
+        return contributions[beneficiary];
+    }
+
+    /**
+     * @dev Extend parent behavior requiring purchase to respect investor min/max funding cap.
+     * @param beneficiary Token purchaser
+     * @param weiAmount Amount of wei contributed
+     */
+    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal {
         super._preValidatePurchase(beneficiary, weiAmount);
         uint256 _existingContribution = contributions[beneficiary];
         uint256 _newContribution = _existingContribution.add(weiAmount);
-        require(_newContribution >= investorMinCap && _newContribution <= investorMinCap);
+        require(_newContribution >= investorMinCap && _newContribution <= investorHardCap);
         contributions[beneficiary] = _newContribution;
     }
 }
