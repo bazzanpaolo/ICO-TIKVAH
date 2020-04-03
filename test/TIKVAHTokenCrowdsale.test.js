@@ -1,3 +1,52 @@
+// Returns the time of the last mined block in seconds
+function latestTime () {
+  return web3.eth.getBlock('latest').timestamp;
+}
+// Increases ganache time by the passed duration in seconds
+function increaseTime (duration) {
+  const id = Date.now();
+
+  return new Promise((resolve, reject) => {
+    web3.currentProvider.sendAsync({
+      jsonrpc: '2.0',
+      method: 'evm_increaseTime',
+      params: [duration],
+      id: id,
+    }, err1 => {
+      if (err1) return reject(err1);
+
+      web3.currentProvider.sendAsync({
+        jsonrpc: '2.0',
+        method: 'evm_mine',
+        id: id + 1,
+      }, (err2, res) => {
+        return err2 ? reject(err2) : resolve(res);
+      });
+    });
+  });
+}
+/**
+ * Beware that due to the need of calling two separate ganache methods and rpc calls overhead
+ * it's hard to increase time precisely to a target point so design your test to tolerate
+ * small fluctuations from time to time.
+ *
+ * @param target time in seconds
+ */
+function increaseTimeTo(target) {
+  let now = latestTime();
+  if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
+  let diff = target - now;
+  return increaseTime(diff);
+}
+
+const duration = {
+  seconds: function (val) { return val; },
+  minutes: function (val) { return val * this.seconds(60); },
+  hours: function (val) { return val * this.minutes(60); },
+  days: function (val) { return val * this.hours(24); },
+  weeks: function (val) { return val * this.days(7); },
+  years: function (val) { return val * this.days(365); },
+};
  const ether = (n) => {
   return new web3.utils.BN(
     web3.utils.toWei(n.toString(), 'ether')
@@ -29,8 +78,8 @@ let token
     const rate = '500'
           wallet = wallet
           cap = ether(100)
-          openingTime
-          closingTime
+          openingTime = latestTime() + duration.weeks(1)
+          closingTime = openingTime + duration.weeks(1)
 
   // Investor caps
   investorMinCap = ether(0.002)
@@ -40,10 +89,14 @@ let token
       rate,
       wallet,
       token.address,
-      cap
+      cap,
+      openingTime,
+      closingTime
     )
     // Transfer token ownership to crowdsale
       await token.addMinter(crowdsale.address);
+    // Advance time to crowdsale start
+      await increaseTimeTo(openingTime + (1));
   });
 
   describe('crowdsale', () => {
