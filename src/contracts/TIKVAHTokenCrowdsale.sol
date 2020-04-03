@@ -3,8 +3,9 @@ pragma solidity ^0.5.0;
 import "openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
 import "openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
 import "openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol";
+import "openzeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol";
 
-contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
+contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale, TimedCrowdsale {
 
   // Track investor contributions
     uint256 public investorMinCap = 2000000000000000; // 0.002 Ether
@@ -15,10 +16,13 @@ contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
         uint256 rate,
         address payable wallet,
         IERC20 token,
-        uint256 cap
+        uint256 cap,
+        uint256 openingTime,
+        uint256 closingTime
     )
-        Crowdsale(rate, wallet, token)
+    Crowdsale(rate, wallet, token)
     CappedCrowdsale(cap)
+    TimedCrowdsale(openingTime, closingTime)
     public
     {
 
@@ -26,11 +30,11 @@ contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale {
 
     /**
      * @dev Returns the amount contributed so far by a specific user
-     * @dev Restituisce l'importo contribuito finora da un utente specifico
+     * dev Restituisce l'importo contribuito finora da un utente specifico
      * @param beneficiary Address of contributor
-     * @param beneficiario Indirizzo del collaboratore
+     * beneficiario Indirizzo del collaboratore
      * @return User contribution so far
-     * @return Contributo dell'utente finora
+     * return Contributo dell'utente finora
      */
     function getUserContribution(address beneficiary) public view returns (uint256)
     {

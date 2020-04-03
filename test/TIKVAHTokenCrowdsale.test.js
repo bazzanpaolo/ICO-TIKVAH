@@ -29,6 +29,8 @@ let token
     const rate = '500'
           wallet = wallet
           cap = ether(100)
+          openingTime
+          closingTime
 
   // Investor caps
   investorMinCap = ether(0.002)
@@ -73,6 +75,13 @@ let token
     it('has the correct hard cap', async () => {
       result = await crowdsale.cap()
       result.toString().should.equal(cap.toString())
+    })
+  })
+
+  describe('timed crowdsale', () => {
+    it('is open', async () => {
+      const isClosed = await crowdsale.hasClosed()
+      isClosed.should.be.false;
     })
   })
 
