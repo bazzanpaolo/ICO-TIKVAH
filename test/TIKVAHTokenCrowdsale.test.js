@@ -1,52 +1,9 @@
-// Returns the time of the last mined block in seconds
-function latestTime () {
-  return web3.eth.getBlock('latest').timestamp;
-}
-// Increases ganache time by the passed duration in seconds
-function increaseTime (duration) {
-  const id = Date.now();
+import ether from './helpers/ether';
+import EVMRevert from './helpers/EVMRevert';
+import { increaseTimeTo, duration } from './helpers/increaseTime';
+import latestTime from './helpers/latestTime';
 
-  return new Promise((resolve, reject) => {
-    web3.currentProvider.sendAsync({
-      jsonrpc: '2.0',
-      method: 'evm_increaseTime',
-      params: [duration],
-      id: id,
-    }, err1 => {
-      if (err1) return reject(err1);
 
-      web3.currentProvider.sendAsync({
-        jsonrpc: '2.0',
-        method: 'evm_mine',
-        id: id + 1,
-      }, (err2, res) => {
-        return err2 ? reject(err2) : resolve(res);
-      });
-    });
-  });
-}
-/**
- * Beware that due to the need of calling two separate ganache methods and rpc calls overhead
- * it's hard to increase time precisely to a target point so design your test to tolerate
- * small fluctuations from time to time.
- *
- * @param target time in seconds
- */
-function increaseTimeTo(target) {
-  let now = latestTime();
-  if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
-  let diff = target - now;
-  return increaseTime(diff);
-}
-
-const duration = {
-  seconds: function (val) { return val; },
-  minutes: function (val) { return val * this.seconds(60); },
-  hours: function (val) { return val * this.minutes(60); },
-  days: function (val) { return val * this.hours(24); },
-  weeks: function (val) { return val * this.days(7); },
-  years: function (val) { return val * this.days(365); },
-};
  const ether = (n) => {
   return new web3.utils.BN(
     web3.utils.toWei(n.toString(), 'ether')
@@ -80,7 +37,7 @@ let token
           cap = ether(100)
           openingTime = latestTime() + duration.weeks(1)
           closingTime = openingTime + duration.weeks(1)
-
+          goal = ether(50);
   // Investor caps
   investorMinCap = ether(0.002)
   investorHardCap = ether(50)
@@ -91,12 +48,18 @@ let token
       token.address,
       cap,
       openingTime,
-      closingTime
+      closingTime,
+      goal
     )
     // Transfer token ownership to crowdsale
       await token.addMinter(crowdsale.address);
+    // Add investors to whitelist
+      await crowdsale.addWhitelisted([investor1, investor2]);
+    // Track refund vault
+      depositAddress = await crowdsale.deposit();
+      deposit = RefundEscrow.at(depositAddress);
     // Advance time to crowdsale start
-      await increaseTimeTo(openingTime + (1));
+      await increaseTimeTo(openingTime + 1);
   });
 
   describe('crowdsale', () => {
@@ -137,6 +100,24 @@ let token
       isClosed.should.be.false;
     })
   })
+
+  describe('whitelisted crowdsale', () => {
+    it('rejects contributions from non-whitelisted investors', async () => {
+      const notWhitelisted = _;
+      await crowdsale.buyTokens(notWhitelisted, { value: ether(1), from: notWhitelisted }).should.be.rejectedWith(EVMRevert);
+    });
+  });
+
+  describe('refundable crowdsale', () => {
+    beforeEach(async () => {
+      await crowdsale.buyTokens(investor1, { value: ether(1), from: investor1 });
+    });
+
+    describe('during crowdsale', () => {
+      it('prevents the investor from claiming refund', async () => {
+        await vault.refund(investor1, { from: investor1 }).should.be.rejectedWith(EVMRevert);
+     });
+   });
 
   describe('accepting payments', () => {
     it('should accept payments', async () => {

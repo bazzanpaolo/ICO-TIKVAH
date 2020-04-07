@@ -3009,7 +3009,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.22",
-  "updatedAt": "2020-04-02T16:24:44.038Z",
+  "updatedAt": "2020-04-04T16:59:37.202Z",
   "devdoc": {
     "methods": {
       "buyTokens(address)": {

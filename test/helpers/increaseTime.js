@@ -31,10 +31,6 @@ export default function increaseTime (duration) {
  *
  * @param target time in seconds
  */
-
-
-
-
 export function increaseTimeTo (target) {
   let now = latestTime();
   if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
