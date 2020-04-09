@@ -57,6 +57,6 @@ contract TIKVAHTokenCrowdsale is Crowdsale, MintedCrowdsale, CappedCrowdsale, Ti
         uint256 _existingContribution = contributions[beneficiary];
         uint256 _newContribution = _existingContribution.add(weiAmount);
         require(_newContribution >= investorMinCap && _newContribution <= investorHardCap);
-        contributions[beneficiary] = _newContribution;
+      //  contributions[beneficiary] = _newContribution;
     }
 }
