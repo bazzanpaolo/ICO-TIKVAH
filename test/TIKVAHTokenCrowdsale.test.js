@@ -1,7 +1,12 @@
-import ether from './helpers/ether';
 import EVMRevert from './helpers/EVMRevert';
 import { increaseTimeTo, duration } from './helpers/increaseTime';
 import latestTime from './helpers/latestTime';
+
+const ether = (n) => {
+  return new web3.utils.BN(
+  web3.utils.toWei(n.toString(), 'ether')
+  )
+}
 
 const TIKVAHToken = artifacts.require('./TIKVAHToken')
 const TIKVAHTokenCrowdsale = artifacts.require('./TIKVAHTokenCrowdsale')
@@ -31,8 +36,8 @@ let token
           closingTime = openingTime + duration.weeks(1)
           goal = ether(50);
   // Investor caps
-  investorMinCap = ether(0.002)
-  investorHardCap = ether(50)
+     investorMinCap = ether(0.002)
+     investorHardCap = ether(50)
 
     crowdsale = await TIKVAHTokenCrowdsale.new(
       rate,
@@ -69,7 +74,8 @@ let token
         const result = await crowdsale.token()
         result.should.equal(token.address)
       })
-
+    })
+  })
 //    describe('minted crowdsale', () => {
 //      it('mints token after purchase', async () => {
 //        const originalTotalSupply = await token.totalSupply()
@@ -160,5 +166,3 @@ let token
     //    })
     //  })
   //  })
-  })
-})
