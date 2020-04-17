@@ -31,22 +31,23 @@ let token
    // Crowdsale config
     const rate = '500'
           wallet = wallet
-          cap = ether(100)
-          openingTime = latestTime() + duration.weeks(1)
-          closingTime = openingTime + duration.weeks(1)
-          goal = ether(50);
+    const cap = ether(100)
+    const openingTime = latestTime() + duration.weeks(1)
+    const closingTime = openingTime + duration.weeks(1)
+    const goal = ether(50);
+
   // Investor caps
-     investorMinCap = ether(0.002)
-     investorHardCap = ether(50)
+    const investorMinCap = ether(0.002)
+    const investorHardCap = ether(50)
 
     crowdsale = await TIKVAHTokenCrowdsale.new(
       rate,
       wallet,
       token.address,
       cap,
-      openingTime,
-      closingTime,
-      goal
+    //  openingTime,
+    //  closingTime,
+    //  goal
     )
     // Transfer token ownership to crowdsale
       await token.addMinter(crowdsale.address)
@@ -76,14 +77,14 @@ let token
       })
     })
   })
-//    describe('minted crowdsale', () => {
-//      it('mints token after purchase', async () => {
-//        const originalTotalSupply = await token.totalSupply()
-//        await crowdsale.sendTransaction({ value: ether(1), from: investor1 })
-//        const newTotalSupply = await token.totalSupply()
-//        assert.isTrue(newTotalSupply > originalTotalSupply)
-//      })
-//    })
+    describe('minted crowdsale', () => {
+      it('mints token after purchase', async () => {
+        const originalTotalSupply = await token.totalSupply()
+        await crowdsale.sendTransaction({ value: ether(1), from: investor1 })
+        const newTotalSupply = await token.totalSupply()
+        assert.isTrue(newTotalSupply > originalTotalSupply)
+      })
+    })
 
 //    describe('capped crowdsale', async () => {
 //      it('has the correct hard cap', async () => {
@@ -117,14 +118,14 @@ let token
 //      })
 //    })
 
-//    describe('accepting payments', () => {
-//      it('should accept payments', async () => {
-//        const value = ether(1)
-//        const purchaser = investor2
-//        await crowdsale.sendTransaction({value: value, from: investor1}).should.be.fulfilled
-//        await crowdsale.buyTokens(investor1, {value: value, from: purchaser }).should.be.fulfilled
-//      })
-//    })
+    describe('accepting payments', () => {
+      it('should accept payments', async () => {
+        const value = ether(1)
+        const purchaser = investor2
+        await crowdsale.sendTransaction({value: value, from: investor1}).should.be.fulfilled
+        await crowdsale.buyTokens(investor1, {value: value, from: purchaser }).should.be.fulfilled
+      })
+    })
 
 //    describe('buyTokens()', () => {
 //      describe('when the contribution is less than the minimun cap', () => {
