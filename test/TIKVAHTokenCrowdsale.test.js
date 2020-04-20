@@ -32,9 +32,9 @@ let token
     const rate = '500'
           wallet = wallet
     const cap = ether(100)
-  //  const openingTime = latestTime() + duration.weeks(1)
-  //  const closingTime = openingTime + duration.weeks(1)
-  //  const goal = ether(50);
+    const openingTime = latestTime() + duration.weeks(1)
+    const closingTime = openingTime + duration.weeks(1)
+    const goal = ether(50);
 
   // Investor caps
     const investorMinCap = ether(0.002)
@@ -45,9 +45,9 @@ let token
       wallet,
       token.address,
       cap,
-    //  openingTime,
-    //  closingTime,
-    //  goal
+      openingTime,
+      closingTime,
+      goal
     )
     // Transfer token ownership to crowdsale
       await token.addMinter(crowdsale.address)
